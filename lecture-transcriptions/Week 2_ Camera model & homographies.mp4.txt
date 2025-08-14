@@ -1,0 +1,163 @@
+Audio call. Audio call. Audio call. 
+
+Speaker 1: Hello, everyone. Welcome back. Okay. Perfect. Hopefully now everything will be working also. So we go to the next chapter of this. What we have actually worked so far, as I said, this is the 3D 2D projection with the pinhole camera, with distortion. This is the two things that we have learned so far. And now we are actually going to one very important topic of computer vision, the basics, is basically a homography. What it actually is. So what we actually do here is we define a plane. 
+
+Okay. And this is a metric representation of a plane. It actually has the following variables, which is A and B, for every point in A and B in the plane. We actually represent the plane by a vector C, which is a point on the plane. And two vectors A and B that they are on the plane and the cross product creates the normal, that is, the particular to that plane. This is how we actually define the plane. 
+
+A point in the plane, like this plane, two vectors on top of the plane, which they have a particular point, particular to the plane. Okay. This is how we actually have. And this is basically how we represent any point in this plane. Okay. 
+
+This is what it is. So what we actually show here is actually a very simple thing, just purely for the homogeneous coordinates sake. Okay. We added an extra line in this particular plane representation, which is 0, 0, 1, 1, extra line. Okay. 
+
+And then of course we considered that we have any point in this plane, any point, and we actually want to project it with a projection matrix B, that we discussed before, all these projections that they contain, the intrinsic and extrinsic camera parameters, to project it in the 2D plane now of the camera. Okay. This is what you actually see here. This is a 3 by 4, the projection matrix. 
+
+The plane matrix is 4 by 3, which basically gives us a 3 by 3 matrix combined together. Okay. And this is what we call a homography. 
+
+So this is particularly an example here. You want to project the plane with the tableau and the chess to the camera plane. So what it actually means? So this, as I said, and I will repeat it again, you take any kind of plane and what you actually want to do is to project it into the camera plane. That's what it is. So what it happens if I basically have two cameras and they're both looking at the same plane. This is what it is here. 
+
+Okay. You basically have a 3D point Q capital that is projected to the camera plane of camera 1 through a homography matrix H1 to the point Q1, 2D point. And if I see exactly the same 3D point from a separate camera or the same camera moved, I actually have a second homography matrix that projects this 3D point to a different point in the camera plane. And if you actually solve the second equation, because, let's see, what it actually happens. Here. This is actually quite simple, as I said. This is what you actually have. And this is your 3D point. And if you had Q2 with the same 3D point, you basically, if you solve according to this one, this is how you can actually represent it. 
+
+Okay. This is equation number one. This is equation number two. And if you put this into equation number one, okay, what is actually going to happen there? Okay. You basically have Q1 equals multiplied by Q2. 
+
+Okay. This maps point Q2 in camera 2, sorry, in image 2 to a point Q1 in image 1 taken by camera 1. That's exactly what it actually does. 
+
+And of course, you can consider this kind of two matrices as one. Homography. Very simple. Okay. So basically this is it. 
+
+If you two cameras are looking at the same point, okay, in the world, and they can actually relate the pixels to homography. That's what we're actually discussing here. This is how we can actually use this. Most of the time. It's a very traditional thing. Many cameras have it already embedded these days. It's image stitching. 
+
+You actually take several pictures of the same panorama and you actually want from this viewpoint, this viewpoint, this viewpoint, to actually stitch them all together. It will come in details later. However, though, yes. 
+
+Yes. It's a little bit more complicated than that because the first part that you actually, and you will see it, is that how do you actually going to define the transformation? You have to find which points in image 1 correspond to which points in image 2. 
+
+Okay. So when I photograph basically this corner from camera number 1, and I photograph it from camera number 2, this particular point, 2D point, will be in totally two different 2D locations in the two different cameras. And of course, you can, this is a matching problem. And the problem with sophisticated techniques that you will learn later, of course, the brute force one would be to compare pixel by pixel, all the pixels of camera 1 and all the pixels of camera 2 and find which one corresponds to which. But this is a very, how to say, brute force way of solving it and that's not the best one. 
+
+Okay. It would be n squared based on the number of your pixels, but you will find, you will figure out better ones later on. It goes a little bit to the details, but homography is the image, and the transformation, like this one here, works only as long as your cameras do not translate. 
+
+It means you have to look at the same plane, meaning if I have a camera, I can only rotate around myself when I'm taking pictures, so for the homography estimation to work, and I cannot translate myself and take another picture. Okay. So, yes, of course. I mean, but that's a, we have discussed this thing multiple times. 
+
+What happens if I multiply the homography matrix with a scalar s? Excellent. Yes. 
+
+I see people, yeah, moving their shoulders, yeah? Nothing. So, basically, it's the same point, okay, because we have discussed all this kind of homogeneous coordinates, and basically, it's just to grab the scale. So, what did I say before? This is a 3 by 3 matrix, okay, which basically says it has nine numbers, and because we're actually estimating up to scale, this means eight unknowns. For more than nine numbers, I will have to estimate eight of them. Okay. How many points would I need? You can look at it there, but... So, if I have to find, basically, eight equations, how many points would I need? To define it. I will need four. 
+
+Every point will give me two equations, one for the x coordinate and one for the y coordinate. Okay. So, this is basically a homography estimation that we actually discussed so far. This is it. This is the matrix that maps the points in camera 2 to the points in camera 1. Okay. This is actually, sometimes it might be a little bit confusing, because this is what is actually, if you don't see it correctly, it's probably the inverse of what you want, because it's always from the camera 2 to the camera 1. Okay. And not the other way around. 
+
+Not the points from camera 1 to camera 2. Okay. But if you know the one, you know the other. Okay. So, how do we can actually define it? Okay. There are multiple ways. You will see it, and I will write it down, probably, because it is a relatively easy way to figure it out. Okay. And you will see why you actually need only four points. Okay. Excuse my very bad drawing. Okay. 
+
+What do you actually need? Think of it like this. Okay. 
+
+Okay. That's what you have. You have a point in camera 2. You have a homography matrix, which is basically nine unknown numbers. And this is basically your point in camera 2, which here it's in homogeneous coordinates, which means you have an additional equation, which you have learned already. 
+
+Okay. Where you basically divide with the last coordinate, the z coordinate. So this can actually be one. So we can go from homogeneous to homogeneous. 
+
+That's what you're actually seeing here. It's not very difficult. Okay. This is the two equations. 
+
+Mapping points from one camera to the other one. Okay. What would happen if I actually break this thing down? Okay. And I will do it only for one of them because it's actually quite a tedious process. Okay. Hopefully. I will actually put it down, which is... I will basically multiply this by this. Okay. Do you see how they are created? All of them? 
+
+I can create all these kind of equations here. The same here. And the same for here. 
+
+And then I can actually divide it. Is it clear? Tell me questions. 
+
+If you actually... So basically, this is a linear system of equations that maps points A to points B. And you can actually hover this kind of unknowns here, which are here and this, you know, already. Yes. 
+
+Yes. The prime is the new coordinate. It basically is the coordinate of the same point in 3D, but from camera 2. Or camera A, or camera B, or whatever you want to actually call them. Okay. This is from one camera and this is from the other camera. 
+
+And that's basically just making them homogeneous coordinates. Okay. This is what it is. So that's what you're actually getting. So for each one of kind of... any kind of mapping like this, for every single point like this, you will get two equations. The third one is actually a little bit dependent. So in this way, so you get two equations for every mapping of one single point. If I have four of them, I will actually have eight equations and I can actually solve for all the unknowns in my system here. 
+
+This is a... And how do I actually solve? This is actually the interesting part. What you actually want to do, and you will sit separately here, is here. 
+
+So what you actually have here is point in second camera, point in the first camera and the homography matrix. Okay. You can actually do a small trick. 
+
+Okay. So how do we solve a linear system like this? Don't multiply by B. What will happen if I do the cross product with this? 
+
+Exactly. This goes to zero because of the parallel. This is just a very, very simple trick of actually making your life a little bit easier here by this. 
+
+This is what I'm actually doing. Well, yes, sorry. Good point. Exactly. This is basically a simple thing and let me see the correct one how we can actually do everything. What you're actually going to see is this. 
+
+So we are here. This is the cross product. What you actually want to see is that this, it can be written a little bit differently. This is purely notation. 
+
+That's basically your cross product here with the homography matrix. This is just purely notation. From this type of notation, you can actually get a fast way of getting this kind of information. For example, think of it like this. This is a notation. 
+
+I will not make a mistake. If you had a point like this, you can then set this as a matrix multiplication. This is already defined. 
+
+This is basically this. You can be replaced here and you can get it fast. You cannot read it. Tell me and I will tell you. What does it say? 
+
+What? Okay, these are the coordinates. The coordinates. 
+
+Here. This is Z2. This is basically the coordinates of point X. Y and X. 
+
+Of point X. Okay. So basically you have this kind of information. So what you actually do, and you could have done it from here, okay? Do you see all these equations? This is basically the trick in order to sort of solve this type of linear system because that's actually what we have. Instead of actually considering this 3 by 3 matrix, we can see the vectorized version of it. 
+
+Well, basically, I just make the matrix into a vector. Instead of actually having a 3 by 3, I have basically 1 by 9. I flatten it out all of it. 
+
+So instead of 3 by 3, I just flatten all the elements of that matrix to a single row. That's how it's actually represented here. You can actually see it here. 
+
+Then you can basically find the homography with the following version. Okay. As I said, we're actually here. This is what I said this. This is basically the ground product that I defined. Okay. 
+
+So what you actually have is after I have done all these multiplications here, if I vectorize now the homography matrix, okay, instead of having 8, I actually have the vector rates. Okay. This is by math. Okay. Okay. 
+
+And which is basically... If I haven't made the mistake. If you vectorize this, okay, then we already know this is how you can write this to information. Okay. And now can you see what has actually has happened? Well, as I said, what we actually have now, we have gone from that equation, okay, to this one. 
+
+Okay. This is Q1 transpose. This is it. Q2. 
+
+Vectorize 8 equals 0. Okay. So, this is equivalent. What I had here, this is actually what I have here. 
+
+0.1, 0.2, and the vectorized version of the matrix. This is the form of the system. So it has actually transformed to this. Okay. This is basically, let us say, you flatten it out, and now you actually just have to solve this problem. Sorry, X. 
+
+Okay. You can understand that this is basically this type of linear system, and we want to actually... Can you... One find me the trivial solution already? Of this kind of problems? 
+
+Of course, if X is 0, you will actually solve it already. This is it. But this is not what we actually want. 
+
+Okay. We want to actually find the A that actually gets this thing into 0. And this is actually noise present. You will realize it's not easy to solve. So instead, what we actually want to do is to minimize it. 
+
+To get it as close to 0 as possible, this type of system. Okay. And what you actually want to minimize is basically the node there. 
+
+Okay. So this is basically the system that you actually want to solve. And as I said, instead of actually taking it to 0, you just minimize this kind. This is a minimization problem. 
+
+And in order to minimize this kind of information, this is actually you impose the node to be equal to 1. Okay. This is called... 
+
+Okay. If you want to set a little bit more, this is about Lagrange multipliers and how you can actually minimize them. This kind of form of equations. But you actually might not want to delve into these things because the solution is already there. Okay. So what you actually basically do is you want to minimize this. Okay. And this is basically, if you want to minimize this, you actually want to minimize this. And this is basically the problem. Okay. And what is actually happening here when I do the transpose, I flip the order. 
+
+And this is what I want to minimize. Given, of course, the norm of x is actually equal to 1. Okay. And this is, as you can probably know from linear algebra, it's a square matrix now. Okay. 
+
+Does it remind you anything, this kind of problems? You can actually assume now that basically this kind of vectors here, x, are not any type of vectors. This is actually the eigenvectors of the system of the square matrix A transpose A. 
+
+Okay. And what it actually happens is this type of vectors, if you want to minimize it, you want to minimize basically the eigenvalue of this matrix. This is basically your L. And what you actually want to do is basically you take this kind of matrix, you do an eigenvalue decomposition, and you take the eigenvector that belongs to the smallest eigenvalue. This is it. This is going to be a 9 by 1 vector. 
+
+That's what it's going to be. You just shape it to 3 by 3. And this is your homographic matrix because that's minimizing your problem. 
+
+It is the vector that belongs to the smallest eigenvalue. This is basically the solution. I don't know if you want to delve a little bit as I said more to think of it like this. It might be more clear if I do this. Let me see. 
+
+And why this is actually happening. Okay. Set like this. What I said, I actually want the homography. Okay. This is what I want. 
+
+I want the homography matrix, which is a minimization problem. Okay. Okay. This is basically your minimization problem. This is what you want to minimize given the norm here. Okay. 
+
+This is the Lagrange multiplier. Okay. If I do exactly what I did before. This is basically the equation. What would I minimize this if I want to minimize it? 
+
+I will get the derivative based on h. If I want to minimize this actual problem, what I will end up, and you can actually see it here, which is basically a eigenvalue from the matrix. This is for purely an algebra. We're actually discussing the definition of eigenvalues and eigenvectors. So you can actually see exactly now why the solution is the eigenvector with the smallest eigenvalue possible. And you will see it in the exercise. 
+
+Practically this is how you solve the homography. Okay. I said this is actually before. Keep it in mind. You use singular value decomposition. You decompose your matrix and then you take the eigenvector with the belongs to the smallest eigenvalue. If you use any kind of already existing library, usually everything is sorted. It's probably the last eigenvector. 
+
+You disable it to 3 by 3 and you will get your homography matrix. Okay. This is it. This is basically a small note for numerical stability. 
+
+Okay. If you do homography estimation directly in the points as you actually measure them, there are sometimes numerical levels. So what we actually do is we do point normalization. 
+
+Okay. We will find actually the variance and the mean of which kind of the point coordinates. And what you actually do is basically you normalize. 
+
+So you can actually center everything at the center of mass, of which point, and that they actually have variance equal to 1. Okay. This is basically what you actually do. This is purely point normalization. You remove from it the coordinate the mean of the points and you scale by the variance. So basically this is this type of normalization. What it actually does is that this is, it's much easier to define the matrix like this from the normalized point to the normalized one than the other way around. And you can easily implement it, but you can just invert it. It's just exactly the same matrix. 
+
+And that is actually what we actually described before. This is your homography estimation. As I said before, this is the points in camera 2. This is the points in camera 1. And what you actually do here, you use this type of normalization of points in camera 2, which is the two two matrix and the T1 normalizes the points in camera 1. 
+
+Okay. And what you, when you actually estimate the homography, it's actually on the normalized version. And then you can move the points back where they were. 
+
+So this is a few tips on the exercise. Be very careful when you come to open CV and things like these, they usually use different types of coordinates for the RGB values. So be sure to flip them. This is basically there. If you're familiar with it and normalize them. And this is actually what we actually have learned in this kind of lecture. 
+
+I hope you remember it. Pinhole camera, all the assumptions that we made for it. If you don't have a pinhole camera and you have a distortion, how we can actually undistort an image and how we actually model this distortion. 
+
+We discussed how we can actually map points on a plane from a camera 1 to camera 2 with homography and how we can actually estimate this homography, basically by doing a singular value discomposition. Okay. So exercise time and I hope it was any questions and I hope it was on time. Yes. With different focal lengths. I have to think about it. 
+
+Actually to this type of a subject. Because in theory, usually when we consider homography, we actually have the same camera moving around. So we actually have exactly the same focal length. If you don't have exactly the same camera, you have an unknown camera, it can still work with different type of projection. 
+
+Not necessarily homography projection. You can actually. And it up to a certain degree. 
+
+But I have to think of it much further depending on the differences. Anything else? Are you ready for the exercises? Hopefully the teaching assistants will come around three. If you have any kind of questions, you can actually ask them. And I will be also here for quite a while if you want anything else. You can start. 
+
+I think this room is free and the other ones upstairs. Okay. Thank you so much. Thanks. 

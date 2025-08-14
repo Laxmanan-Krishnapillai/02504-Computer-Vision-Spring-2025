@@ -1,0 +1,285 @@
+Speaker 1: Can you hear me? Okay, is it clear? 
+
+Speaker 2: It's okay. Okay, perfect. Let's not. Hello, everyone. Welcome. I'm Fiodora and I'm substituting again for more than. And today we're going to talk about camera calibration. Okay. So with the help of a lot of people, hopefully this is a live streamed and recorded lecture. Okay. As I said, we're welcoming any kind of feedback. If you have any comments about the lecture or the content, please come to me and we can just talk. 
+
+Okay. So today we're going to talk about basically camera calibration. And we'll discuss two types of method. The first one is the DLT and the second is the Chang's method, relatively new from 2000 method for camera calibration. 
+
+Okay. So as I said, first we'll talk about the DLT algorithm, then about the Chang's method. We will actually see if this type of calibration methods are good by computing the projection error. 
+
+A little bit of talk. What do we do when we actually have nonlinear calibration, when we actually do not have a pinhole camera and distortion, and some small practical remarks about the exercise and the general methodology. So what we have done actually so far, we have talked about the pinhole camera model, how we project 3D points to 2D space of the camera. We discussed about the homogeneous coordinates and why they're actually quite important to be able to write everything in a matrix form. 
+
+So we estimated homographies, a little bit about linear algorithms, and now we're actually going to talk about the calibration. And first of all, this is the DLT. Okay. 
+
+Direct linear transformation. This is the first type of method that we can actually discuss today. Okay. Basically, you're all familiar, I hope, now with this equation. Okay. 
+
+This is it. We have actually seen it multiple times, and it's probably going to be the most basic equation that we'll discuss all over the course. So what we actually have here, this is a 3D point in homogeneous coordinates, x, y, z. This is in 3D space. 
+
+This is the projection in the 2D camera space, and this is the projection matrix. Okay. So what we have actually discussed so far, we usually talked a little bit about the methods of how to project a 3D point to 2D. Maybe you have talked with Anna already, you're going to talk about it in the future, how you can actually get from 2D to the 3D point now. And what we're actually going to talk today is going to be about this projection matrix here. Okay. So we have seen it actually before. 
+
+This is a 3 by 4 matrix. Okay. This is a little bit broken. 
+
+Can you hear me better now? I hope so. So this is a 3 by 4 matrix. 
+
+Okay. It's one matrix, but it actually has three components in there. This is the intrinsic parameters also included from the intrinsic matrix. There's also the rotation and the translation of the camera. 
+
+So this is what we're actually going to try to estimate today, not just the whole projection matrix, but the individual intrinsic and extrinsic parameters. Okay. So this, of course, the S is because it's up to scale. Okay. 
+
+For the homogeneous coordinates. This is what we're actually going to discuss. Okay. This is the common trick that we actually discussed in homographies before. 
+
+Okay. This is the equation as I said, to the point, 3D point the projection matrix. If you actually basically do the cross product between QI and QI, since these vectors are parallel, you get a zero. And this is, of course, the cross product of QI with the rest of the equation here on the right side. As I said before, in the previous lecture of homography, this kind of multiplication here, the cross product, you can actually write it in a matrix multiplication form with the common product. 
+
+Here. This is just a matrix, a particular matrix. And this is a usual trick. What we actually do here is that we flatten P. It's not anymore a matrix. It's a vector. Okay. And everything that doesn't belong to P anymore, it goes to B. Okay. So this is how it's actually looking. Okay. It's just a trick. Basically, instead of writing this kind of matrix form, I basically flatten P, which is going to look now like this. 
+
+This is just the 12 elements of P in a vector form. Okay. Flatten it out. And this is actually now what B is all about. 
+
+It's basically the 2D and the 3D coordinates information of the system. Okay. It's exactly the same thing. Whatever you see here, it's equal to this here. 
+
+So this is how you actually do it. And basically, you have this B matrix and we have the flatten P. And this is basically how we actually stack multiple equations like this. If you see it here, this is basically shows you when you have one 3D point that is corresponding to one 2D point. 
+
+This is what you're going to see here. This is what this equation is. One 3D point, one 2D point. I have to know the correspondences. Okay. And basically, this is, I built my B matrix now based on multiple 3D to 2D point correspondences. 
+
+Doesn't even remember how many I need usually for this kind of information to estimate. Yes, exactly, exactly. So this is what I do. I stack all my equations because I have four points here. Okay. 
+
+And do you remember how do we actually compute the projection matrix P from as of today? Yes, but what do I do after that? I do decompose. Exactly. Because if you remember properly, what you actually want to do is to get the P here. Okay. You have to estimate P that takes this to zero. 
+
+Okay. But of course, this is not always possible. What you actually want to do is you want to find the P that minimizes this equation. That goes as close to zero as possible. And thus, you take the eigenvector of the smallest eigenvalue. This is what's going to minimize your problem. So you get this eigenvector and you actually, this is going to be a vector. 
+
+You formulate it into a matrix form of three by four here. And this is your P. Okay. So what have we actually done? We have estimated P. Okay. 
+
+This is the DLT. It is not how to say the details. We can actually discuss it later. I will say it very briefly. 
+
+So in theory data that you have P, you can actually, can you actually compute the K and the rotational translation? So basically, okay, let me see. Okay. That's it. So you got P. Okay. You know it. It's a three by four. Okay. What you would actually want to get, of course. Do you remember it? This is what P is. The rotation of the translation. 
+
+Speaker 1: Yes. So we're so using SVD on P? Yes. Or on P? 
+
+Speaker 2: No, you don't, on P. On P. You don't have P at all. Okay. So this, this is your known, whatever you know, which is basically, you can see it from here, because basically this is your coordinates in 3D and your coordinates in 2D. So you actually know. You have to know these correspondences. You have to know this 3D point is projected in my camera on this 2D space. 
+
+Okay. So you have all these kind of correspondences, which is the capital X, Y and Z on 3D and the small ones X and Y, which is actually in the camera space. So you have a matrix B. And what you actually want to find is P. Okay. 
+
+Okay. This is it. And you found it. 
+
+This is 3D. You know this. It's done. 
+
+Done there. Yes. So P is going to get what actually gets flat, right? Yes. Yes. 
+
+It is flat and you get the 3D and you just, how to call it, you're going to save it. It's purely the same. Okay. Okay. Okay. I will, it is a little bit more complicated. 
+
+If you want to check it better, you can find this to QR decomposition. Okay. And you can actually discover, it's not discussed in the slides, but eventually this is not where you stop. 
+
+You hope to find this from the cameras. Okay. So if you, as I said, want to check a little bit better, we can actually discuss it later, but you will get it to QR decomposition. 
+
+Okay. So this is the DLT. And of course it has some kind of problems of actually getting this kind of estimation. And the first one is that of course you have to have 3D to two decodespondences. That's actually relatively difficult. 
+
+Okay. It's also, if you had multiple cameras and multiple viewpoints, you have to do this estimation for every separate camera. You cannot combine any kind of information. 
+
+This is it. Of course, and also if you have any kind of lens distortion, it cannot be incorporated to this kind of estimation. Okay. This is problems of this kind of setup, but it is an algorithm that will give you the intrinsic and extrinsic camera parameters eventually. But I'm going to discuss a little bit more thoroughly, a more popular method for camera calibration, which is the Zang method. 
+
+Okay. And what we actually do, have you seen this kind of checkerboards? I've seen them around the campus. These are used for camera calibration. This is basically a pattern like this that you print out. And it's actually quite useful because it's very easy to detect corners in this kind of setup. It's black and white. It's binary. 
+
+It's very easy to find them. Okay. So what you actually want to do is you print out a checkerboard like this and you put it on different orientations and translations or the camera in different orientation and translations. This is actually equivalent. 
+
+This is not a problem. And you take a picture of it. So what we actually want to do is we have all these kind of pictures of this particular pattern. Okay. Not generally in space. And we actually want to find the extrinsic and intrinsic camera parameters by taking pictures of this pattern. 
+
+Okay. So what we actually first do, if you notice this kind of checkerboard, it's actually flat wherever I put it. So I make the assumption that there's no Z coordinate. This is a plane. It is in 3D, but it is a plane. 
+
+For every single picture that I take of it and then the kind of representation that I have of this kind of checkerboard in 3D space, I assume each one of them has the Z coordinate equal to zero. Okay. Because I want to point this out here. For this kind of setup, we actually will work with different orientations, different translations for every picture that I take. Okay. 
+
+But individually on the local coordinate system, of its particular picture, I have the Z coordinate equal to zero. Okay. So this is basically a very famous equation that we have discussed like a million times until now. 
+
+Okay. This is the intrinsic camera parameters, the focal length, the principle point that we actually discussed already. This is the rotation and translation matrix. 
+
+It's written like this, but what it actually means is that r i is one column of the rotation matrix. Okay. This is just the column. 
+
+Okay. So this is basically a three-dimensional vector in each one of them. That's what it is. 
+
+It's just pure notation. And what I actually do, as I said, I don't have points in three-dimensional space now. These points are in the plane, in the 2D plane. So the Z coordinate is actually zero. Can you guess what is actually going to happen when I use this kind of equation? Look at the rotation of every single x, y point in the rotation matrix. 
+
+Speaker 1: And this would calculate the projection. 
+
+Speaker 2: Close, but not exactly. Very close. So basically this is going to be zero. So you lost this kind of rotation. You don't need to estimate it, the third component. So if you see this column actually disappears. So what you actually want to find is actually the rotation one, the rotation two, and the translation. 
+
+Okay. So I reduce the number of parameters that I actually have to do. So what is actually happening here? This is just rewrite. And you will see we have estimated homography already. 
+
+And this is what it actually is here. It's a homography. It's a plane to plane estimation. I have a 2D plane, another 2D plane, and I estimate the rotation and translation between the two planes. So plane to plane. 
+
+This is a homography. And I'm working under this assumption now. Okay. So what I actually have to do is basically I find correspondences between this pattern that I have to picture and the pictures. As I said, it's extremely easy. You can actually use any kind of maybe edge detection algorithm or things like this. They will actually find you this kind of coordinates. And you can actually match them easily. 
+
+Okay. So if you find this actual coordinates, then you have this kind of mapping. And what you can actually do, I discussed this already before, we can actually estimate. Now we know the homography. So as we did, how do I estimate it? Doesn't even remember that I said it five minutes ago. 
+
+People, please give me some interaction. You will take the SVD, okay, after you flatten the matrix and the extra P, you will take the smallest eigenvalue, the corresponding eigenvector, and you will reshape it. And that will give you the homography matrix. 
+
+So in this equation, now I know the homography. Okay. This is a known thing. Why do you say find all the properties of the small bit more than one? Aha. 
+
+This is it. So now, as I said before, and I will explain it later, you will see now I have a homography for every picture that I take between the 2D plane and picture number one, between the 2D plane, which is actually in 3D, but I suspect I already put it into 2D, and the second picture. So another picture between this plane on the real space and the 2D, and each one of them is a different homography estimation. 
+
+You can imagine, different rotation, different translation. So this is actually what we actually see here. This, I've already estimated before, this is the homography matrix, okay? This is a vector, and this is of course the scale. We can discuss everything, everything is up to scale, but you can almost ignore it. 
+
+It's not going to be a very important thing if you just put it into one for the moment, in your mind. So this here is the intrinsic camera parameters, as I discussed before, and this is the rotation and translation that we're going to estimate. This is what you're going to get, k, r and t. So from this kind of, this is just the previous equation just written slightly different on the big deal. So what I actually know here is that I have an orthonormal basis, because these are rotation vectors. And what it actually tells me is that of course, if I multiply r1 with r1, I will get equal to 1, and if I multiply r1 without 2, I will get the orthogonal and it will be 0. Okay, this is basically, this is two constraints that I got from my matrix. Okay, this is basically, let's go through it step by step. 
+
+Okay, what have we discussed? Okay, this is basically my projection matrix that I have discussed before. When I have this famous equation, we call it usually p. Okay? Now it's a homography. That's why it actually has changed notation, but it's actually the same thing. This is your projection matrix. 
+
+And this is, if you break it down to intrinsic and extrinsic parameters. This, basically, you can actually write it now. Each one of them is a column, column vector of this matrix. Okay, this is what I get. If you break it down. Yes, you're right. I'm kind of honest, there's also my handwriting. But, yeah. Let's stop again. 
+
+Speaker 1: What was I discussing? Okay. Is it more clear now? Okay, perfect. Okay. 
+
+Speaker 2: As I said, projection matrix. I have this, and because I have estimated it already, that's the day. And this now are my unknowns. This is what I want to actually get. And as I said, if you write this in a column vector form. Then you can very easily see that basically. With the lambda. Also, if you need it here. Okay. After scale. 
+
+This is a very simple equation. So what you can actually get from here. Since K is invetable. Okay, this is the relationship between K and the other one. Okay. 
+
+So in theory, if I had this, I would estimate this quite easily. But I don't yet. What I actually have. 
+
+Is now this very nice constraints in this kind of setup. Okay. Because you remember, R1 are two enough for normal. Okay. So what I actually get. 
+
+I have equation. Number one. And I have also. Which is basically. This is equation number two. This is your constraints. This is what we know about that. And in this way. We can actually get constraints about K. I can replace it. I already know this is my other one. So if I replace it here, for example, I can actually put this is transpose. 
+
+Let's say I want to use this given one equation. I'm not doing a mistake. Can you see it? Okay. This is purely by replacing R1. 
+
+And now two with the corresponding ones. Here. This is what I actually did. 
+
+And what I can actually get. To make my life a little bit easier, I can rename this. So I transpose n minus 1 equals to b. And we will discuss how we can actually get b. Is everything clear? This is just purely notation. I replace this two variables with this one. 
+
+Speaker 1: Yes? Yes, yes, yes. No, this is not in the back. This is correct. This is correct. This is the transpose. And this is fine. 
+
+Speaker 2: Yes. I transpose this one. Yes, exactly. So I transpose this one. I put it here. I change the order of the variables. I put this here. And this goes second. 
+
+And transpose. So basically here. And of course, this is the same. I didn't have to do anything for the second one. Because I didn't write it down. But this comes from here, from the second variable. And this is, that's what you have here, equation number one. 
+
+This is a constraint. And this is actually what you're going to see here also in the slides. OK? So we're going to go step by step. 
+
+So this is what it tells you. OK, this is what I have done. I have replaced all these kind of variables. 
+
+And I have done this. OK, this is the scale factor. Because all our notation here is up to scale. You can replace it with anything that you like there. 
+
+Between homogeneous and homogeneous coordinates. OK. In the beginning, they removed it fully. But everything is up to scale. OK? 
+
+If you didn't have it, it would be one. Here, down there. So basically, this is here the set, the constraints of our previous slide. 
+
+This is what we have actually done. This is the first equation between R1 and R2. And this is the R1 norm and the R2 norm. OK? This is basically. So I have two constraints. Is this enough? 
+
+To get all these variables? The homography? Yes. OK. Think of it like this. So basically, this kind of estimation is happening. These two constraints are per picture. 
+
+Basically. I know I could have four points and I could get a homography. But can I split it out to rotation, translation, matrix and interesting parameters? Unfortunately, not. Not by itself. 
+
+It's very easy to see action. You have eight degrees of freedom in the whole homography matrix. Six of them are stuck for three rotations, three translations. So you are left only with two degrees of freedom for the intrinsic. Camera parameters. 
+
+So because you have saved three for rotation and three for translation, with these equations, you can actually find the intrinsic parameter matrix up to two degrees of freedom. Only. This is what you have left only. The other ones are taken. 
+
+Basically, from the rotation and translation. OK? I'm sorry? I thought the z was here. No, it's only the third rotation that is zero. It doesn't rotate on the z, but it rotates on the x and y plane. So the rotation is still there, but it's only between two de-planes. 
+
+Not on the third dimension. That's what I'm actually assuming there, which I still have. And I still have to find it at the end with the other normal vector. So what I actually do is, this is it. As I said before, I have replaced the notation of the intrinsic matrix and replaced it with b. OK, it's a little bit easier. I say, OK, I cannot find this directly, but I will find b. 
+
+Speaker 1: It is the same b that you have there. 
+
+Speaker 2: You mean from the DLT? No. Yes, it's a dip. No, it's a dip. No. Unfortunate notation. It will get even worse. It's a little bit confusing. So what I actually said, it's easier to get b than getting k directly. OK, so I'm going to estimate b. 
+
+And what do I know about b? I know it's symmetric. Exactly because of actually this multiplication here. And if it's symmetric, I don't have nine unknowns. I actually have six. 
+
+OK, this is what I have done here. These are the only ones unknown. They are the ones that are just basically the same elements of the matrix. So not eight. I actually have six unknowns of finding b. And what I actually do, a usual standard technique, I flatten it. OK, I don't operate anymore in the matrix form. 
+
+I operate in this vector form. I put them all in one row. That's what it is. And actually, this is exactly what it says here. This is what I have actually written down there. 
+
+See? These are the homography elements. This is the b that I have to actually estimate. And this is the homography vector again. OK, the matrix. So keep it in mind. H is known. B is unknown. This is what is actually happening. 
+
+And this is a usual trick. I have already flattened b. This is exactly b, but not in matrix form anymore. It's just a vector of all the unknown elements, or six of them. And everything else from the homography estimation goes into this kind of UI. OK. As I said, we have done this for SVD so many times. Exactly the same process. OK, to be able to make it a linear system of equations. 
+
+To actually be able to solve it. OK, if you want to see it, this is basically how this UI looks like. OK, these are the homography elements from the matrix that I have already estimated before with SVD. OK. So this is what I have done. 
+
+This was equation number one. OK, remember it. Here. This is my first constraint. This is what would give me. 
+
+OK, this is it. This is one equation that we're discussing now. We had two constraints. This is constraint number one. There. And this is going to be constraint number two. OK. 
+
+Which is exactly, as I said before, we have this kind of information. We replace k minus transpose to k minus one inverted with b. Exactly. I basically just put the second, the right hand of the equation to the left side equal to zero. And if I flatten b again, this is exactly the same matrix b flattened. 
+
+This is basically my UI, which is also the homography elements. So two equations just written in a different form. This is what it is. 
+
+OK. This is what I get from basically one particular picture of the checkerboard. Two equations. Two constraints. OK. Can anyone guess how many I need to estimate my... It's three. 
+
+I have six unknowns. I don't have nine anymore because exactly my matrix b is symmetric. And exactly because it's symmetric, now I actually need only to take a picture of the checkerboard three times. And stack here six equations. 
+
+Two equations per viewpoint. OK. This is what I'm doing here. Viewpoint number one, viewpoint number two, viewpoint number three. 
+
+Is it clear so far? I know it's a bit confusing. Yeah, I know. 
+
+But basically it's the same tricks again and again. In the whole set up. This will give... This is basically just notation between camera vector one and vector two. And camera one and camera two. Of what we see. It's purely notational. 
+
+It's not going to be worried too much. This is constraint number one basically. OK. And this is... These two come from camera one. These two come from camera two. 
+
+This will come from camera three. Four, five, depending on how many you have. OK. Think of it like this. And then basically this v1 and v2 is just the column vectors. It's just... It's purely notation. It's a little bit confusing, but it doesn't really matter. What you hear? 
+
+Don't worry too much about it. You will see it when you implement it. That is just the elements of the matrix and the vector at the end. Just notation. So, as I said, what do we actually have now? 
+
+You have seen it before. This is the linear system. I have v and I want b. Which as I said again, this is exactly how you do it with SVD. 
+
+You will find the agate vector that corresponds to the smallest agate value and you will save it and this will give you b. Ah, that's fine. Yeah, OK. You don't have it yet. Let me see if it's later. So, we'll go step by step and I will explain it also. Don't worry about it. OK. It is possible. 
+
+So, is this a good setup? Maybe actually I should talk about it right now. So, in theory you can find it with two ways. 
+
+There's a Cholesky decomposition because what you actually have here and these two things. That's it. What we actually have. Do you know this? Yes, indeed. So, this is what you want and you want to find this two. OK, actually basically only one of them, the k. OK, but there is a relationship between the two. OK. 
+
+So, what you actually can do, if you put everything like this to minus one. Can you see it? Down here. 
+
+Put it up a little bit. I invest everything. I invest everything. Yes. For this particular setup. 
+
+Because it's a particular angle. So, that's actually what you're going to get. OK, and this here, if you actually put S with the here on the B in wells. OK. 
+
+This is basically. OK. And then you can find. You can compute it like this. If you do it again, if you put the k transpose here, it will be another D in the power of one half. 
+
+But you transpose. And it will give you this. And this is an upper triangular also because of this. This is how you can actually do it. There are other options to do the decomposition between how to decompose this to this. But this is one option of actually how you can actually estimate it. And then you get k. And if you get k, OK, then finding the rotation is actually quite easy. 
+
+From here. You already have k. You have just estimated it. And you already know the age. Because you have estimated it before. 
+
+And just replace it. The same way you find R2. Because you also have exactly the same equation. 
+
+And T. And you can find R3. It's a particular thing. Because of the other normal basis. But we can discuss about it. So far, pinhole camera. There is a way of doing it for distortion also. I will explain. I will, I guess. 
+
+I don't really see what happens at the end of the time. This one, k. Yeah. k equals to u, d, to the power of one half. The square root of d. You can easily see it. If you actually multiply it again with d to the square root of one half. And you transpose to do this. 
+
+You will get exactly the same. For the square, basically. So this is the only way of finding it. So the question is like this. 
+
+We have all these kind of things. And is this a good estimation? I estimated k. I estimated the rotation. I estimated the translation. This is it. Now I know k. I know R. I have no t. What is actually, we can see that. 
+
+We can actually, the project everything. I take the points in the checkerboard. I use the estimated k, rotation and translation. And I project them now to the image plane. And then I can actually compare this projection. 
+
+Is it too much different from the ones that I have actually detected already? In the picture. Okay. So this is what it actually finds here. This is your ground truth. 
+
+This is the correct one. What I have actually detected. And this is the projection. And this p is of course to go from homogeneous to camera. 
+
+This is the projection. And then if I do this for all my cameras and for all my points that I have actually detected, then I can actually get basically the sum of this error. And I can find out if this estimation is correct. 
+
+Depending on how big the error is. Or everything else. Okay. So we have discussed this. So basically that's what it says here. 
+
+This is what they said. You have k already. And now you want to actually find the rotation and the translation vectors. We talked a little bit before. This is just purely easy to replace in the equations now. You have it already. 
+
+You have the k, you have the h. And basically you do the cost product between R1 and R2. And you actually get it. Okay. 
+
+Given of course the null. Okay. So what can actually happen? 
+
+We have put enough constraints but not enough of them. So during a nice estimation what we can actually find out is that when we actually compute the translation vector, the z coordinate can actually be negative. Can you guess what happens? If it's negative, I estimate this is the translation vector of my camera. Well, what it actually means is usually that unfortunately the camera is estimated to be behind the object. It's not looking at the object. The object is behind it. 
+
+Like when we actually have already discussed the pinhole camera, we realize that when we actually have this kind of model, we usually have everything behind the camera, the pinhole, and it's inverted. Okay. This is a common issue. But for notation purposes, we usually model our world like the camera is on the front. This is it. 
+
+What we actually basically have to do is relatively easy. If this happens, if we estimate everything, okay, and we realize that the z coordinate of the translation vector is negative, all I have to do is basically change the sign of my homography matrix and then we estimate everything again. And then it will assume that basically the camera is in front of my object. Basically just, I mean, you can just change the signs of rotation translation. Also, it will be exactly the same. 
+
+All of it. This is basically what you asked before. This assumes that this is a pinhole camera and everything is fine. But this is not necessarily true. 
+
+But this is what actually makes life a little bit easier the way we estimate everything, but we can actually now include the distortion like we have done before. This is going to... Yeah, absolutely. Yeah, exactly. That's basically that. 
+
+We have discussed it before when we were discussing homographies. Okay, can the camera distort? This is basically the distortion. This is the changing of the homogeneous coordinates. We distort and everything together. 
+
+We have assumed, you know, the ball distortion, the pin cushion distortion that we actually assume, and this is actually how we actually estimate everything. So, and as I said, a few practical elements or so. This is it. 
+
+Ah, okay. So, as I said, we have these kind of two constraints, and this is actually quite... We discussed already that we assumed that the rotation, the third rotation is actually zero because everything is on a 2D plane of my checkerboard. So, can you imagine any other things that have to be a little bit careful when I'm actually taking these pictures of the checkerboard? I'll translate them there. So, basically, if I only translate, and I do not rotate at all, okay, then I have exactly the same constraints for the rotation in both pictures. So, I cannot estimate. I lost one equation. So, what you actually have to remember when you actually want to calibrate cameras like this is basically rotate, rotate the board. If you leave it as it is and take always parallel pictures, you lose your constraints. Ah, and we have discussed this before. As I said, so, we needed four points per picture, so we can actually estimate the homography. This is common for the homography, and we already said that in theory, we need just three pictures of the checkerboard to estimate the six variables of our matrix. Okay, this is how it is. 
+
+However, though, of course, you can imagine that the theory from practice is a little bit different, the more you have, the better the estimation. That's this. And this is what it actually says here. Try it, check the projection error, try it again until you actually find a better projection error. And of course, like always, with everything that has to do with any kind of estimation and optimization, keep in mind that when you actually estimate everything in your training set, in the images that you have already taken and you have actually calibrated the camera, usually when you estimate the error only on these ones that you have already done the estimation, the error can be very low. That's why usually, in any kind of optimization method and deep learning, we keep a separate set where we actually do not use for the estimation of our algorithm. And we estimate the error in that one. We usually call it the validation set. 
+
+Okay. And usually the error is there. So what you actually want to see is to minimize the error in your validation set. In your training, it already will be quite small. 
+
+You use the images to do the estimate. It overfeeds. That's what it says. But we can discuss this also later. So this is what we actually have done here. This is a relatively short lecture and it's actually these two components. 
+
+How you can do camera calibration basically just find intrinsic and extrinsic parameters, given two algorithms, the DLT and the chunks algorithm. Okay. Chunks is mostly used these days. 
+
+Okay. It's much easier to use a checkerboard. You can actually get a good projection error by using a lot of pixels like this. You can actually also correct for distortion instead of pin-hole camera. And it's relatively easy to use. This is it. 
+
+And basically this is a, you can actually start the exercises. And if you have questions, please tell me. Anything? Nothing? Excellent. 
+
+Even better. Well, it's up to me later. I will still be here for the, and of course the teaching assistants will be also for the exercises around to help you with the coding. Okay. Thank you. Thank you. 

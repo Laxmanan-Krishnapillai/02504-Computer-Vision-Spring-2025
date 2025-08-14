@@ -1,0 +1,343 @@
+Speaker 1: Hello, let's hope that it works out. Good, I'm not exactly sure how this is going to work out. But I have, at least I hope I pressed the right buttons to record the lecture. Something was recorded last time, but there are recordings from last year, and I'm not exactly sure that I got it up correctly from last time, but I'll make sure to get some links for these three first lectures from last year's recordings. I think Morten was a little bit more professional about these things, so that you can go in and see that. 
+
+So, let's go to the third week. This must be it. I hope so. Good. Now I think I'm set up and ready for today's lecture. 
+
+I'll also need to clean some boards here that are quite overwritten. But let's just start. So, I want to hear you. How did everything go well last time? You were not here? No, the lecture was fine. The exercises were hard. The exercises were hard, okay. So what was the difficult part? I gave up on the exercise where you had to unwork the picture from the GoPro. I tried to do it normally with the code. 
+
+I got the matrix that was correct, but when I was plotting it, I could not see the full picture. Okay. So, yeah. Luckily, we have some teaching assistants that will come today and help you. So, if you have questions for the last time's exercise, or the exercise before, it's completely fine that you spend some time with the TAs discussing these things. Unfortunately, I have a daughter today that has birthdays, so I need to, after the lecture, to leave and go home. 
+
+But the TAs will be here to help you on those things. Good. So, where have we gotten to? 
+
+Thank you. We started out talking a lot about camera model, and we talked about homogeneous coordinates. Then you've had a lecture on homography. And what was the difference between the first lecture and the second lecture? That was that we went from one camera to two or more cameras. 
+
+And we'll continue this way, still having... This will be very much on two cameras, so we will have a set up with two cameras. And it's a little bit weird this way of being introduced to computer vision, because I remember when I was introduced the first time, I was always in the beginning thinking, but how do we actually use this in practice? Because you're introduced to the camera model, and then you're introduced to a homography. And today we'll also be talking about points in the camera, and then going from the camera to the 3D world, or from the image plane to the 3D world. But how are we going to do it in practice? 
+
+Because we're just given the camera model and the parameters and so on. And that is something that will come very soon. We'll start in the next lectures to talk about camera calibration, talk about feature point, feature point matching and so on. And that'll be the basis for this. So you still have to live with that point is just something we have given, and camera parameters is just something that's given. But that's of course also something we want to estimate. But today we will be deriving some matrices that put constraints on points in two images, and also talk about the epipolar geometry, and how that relates to points in 3D. 
+
+So that's the main part, and how to estimate points in 3D if you have information about two corresponding points in the image plane. Good. So, yeah, first disclaimer, it's being live streamed and recorded. 
+
+Hopefully, yeah, I think it was recorded last year. So that should be fine. So the learning objectives is that you should be able to derive and explain the epipolar line in computer vision, derive and apply the fundamental matrix, essential matrix, linear algorithm for triangulation, and then explain pros and cons using a linear algorithm. So that's all fine, and that's all well described in the lecture note. At least described in the lecture note, I don't know if you read. There was, if you have been reading, I think there was a mistake on the learned, mistake or mistake, but there was a reference to a chapter 7 in the Sileski book. And chapter 7 is on features, and that's not for now. Actually, it was supposed to be chapter 11, but that's because chapter 7 was in the old Sileski book. 
+
+And I just took it away. I think it's covered well just in the lecture note by Henrik Gones. And that's the main part, and that's where you read about this multi-view geometry. Good, but let's try to write something up here on the board instead. So, I'm just gonna clean up here. So, can someone tell me what are the components of the camera model? 
+
+While I'm cleaning here, who would like to tell me that? What is the, yeah, how do we formulate the camera model? So the pinhole camera model. I'm standing here with my back to you so I cannot see who is eager to tell me. So what elements do we have? 
+
+What is it we start with? Yeah, up there, yes? You have a principle point, yes, and what more? Focal length. Focal length, yes? Yes? 
+
+Yeah, and then one after the last one. So, what is it the camera model will do for us? What problem does it solve? It projects 3D points. 
+
+Exactly. So it's going from the 3D world, a 3D point, where does it end in the camera? And to do that we need information about, of course, the 3D point, where does that live in some world coordinate system. Typically when we talk world coordinates we would say this is something we measure in some unit that makes sense, so in meters. And then we want to go from that coordinate system and then get it into a coordinate system of the camera which is in pixel coordinates, typically. So that's going from the world to the image plane. But we can also go from the image plane and then infer where did that point come from in the real world. That requires that we know the camera parameters as you told about, so these internal parameters, focal length and principle point, so how we move around into the coordinates of the camera. And it also requires that we have the relation from the world coordinate to where are the cameras in this world coordinate. And that's what we get from the camera model. 
+
+Good. But we need two cameras in order to say anything about where in the world a point is, so if you observe a point in the image plane, why is it we cannot just say where in the world did it come from? I guess you all, you will all know any suggestions. So we just have an image and we say, oh, I see you in the image. But just by saying that there you are sitting, that's the center of you, why can't I tell just from that point how far away you are? 
+
+Yes? Exactly, it could be at any point along that line. I know the direction, but I don't know the distance. But if I have two cameras and know where they are and all this information, I would say that, okay, I have a line in space from where I'm from this camera watching you there and then going over here and watching the same. 
+
+I could also draw a line in space and these two lines will tell me this is where in space that you're sitting and that would give the 3D point in the world coordinate system. And that's what we will end up with today. But there are some nice properties with multi-view cameras that we are going to touch upon first. So this thing that light travels along rays is completely essential for the work that we will do. 
+
+So we know that points in 3D project onto an image plane along lines. So there's a fundamental concept here and now I'll see if I get to use some colored chalk because it might be a possibility. So let's say we have two cameras. 
+
+Now I'm going to start drawing a triangle. So the first point here, this is the principle point of camera 1. So I just write camera 1. And then I say, okay, I'm going to put another point here which is for camera 2. And that's also the focal point of this. And then we say, okay, we have some, perhaps a point out here in 3D and then I need to draw a line from here all to a straight. So these should be straight lines. 
+
+I'm sorry about them. Might not be super straight. And then we draw in the camera here. So we have, now I'm going to try to make a perspective drawing. So think of this as the image plane of one camera and then we have the image plane of another camera here. 
+
+So this is still the principle point. So these are two cameras and I can draw some, some like a few lines here indicating that this is a camera. So this thing of this is a camera looking into the world and this is another camera looking into the world. So here I'm going to draw the same lines, something like this. So these lines are just to say that we have this perspective looking into the world. Then we can draw a line between the two cameras here. 
+
+As straight as I can. So this should also be a straight line, right? So there's some kind of baseline between the two cameras. 
+
+And then we say that for each of these points, there's a point here and there's a point over here where this, this point we have here. So we call this Q that projects back to the image here. Let's call this one. We can call that Q one. And this one over here we can call Q two. So that's the point in the image plane that this point projects back to. 
+
+Good. So if we have just this point over here, we know that this point lies along this line in some direction in space. Then we will know that, okay, but if we don't know anything more than just that this point is observed in this camera, what will the point, where will the point be in this image? We can constrain where it can be in this image. And how is that constrained? This is the basis of hippipolar geometry. 
+
+So any suggestions for that? So think of it that this point over here, we know we've observed it here and we know the focal point is here. So we know that, now I'm going to start with the colors. So we know that somewhere along this line is this point, right? That's what we know. 
+
+I could all, and we call it an extension on this. So where, what can we tell about this point in the other image? Yes? Exactly. So it has to be on a straight line. And we'll, now just a disclaimer, we'll at some point get to lens distortion that warps the image. So it's not exactly straight lines, but then we unwarp the image before we start this processing. So we can safely assume that we can count on lines in space will also be seen as lines in an image. So therefore we know that this will be a line over here. 
+
+And we also know, because this point is on this line. So it'll go through the actual point over here. So I'm going to try to draw it with some perspective here. So we know it'll be, for example, here, something like this, that this is the line here that projects onto the other image. And this is what we call an epipolar line. 
+
+If we then go and watch from the other side, so I'm going to take another color here. So this line over, this point over here, we know that will be placed along this line, right? And where will that be in this image? 
+
+Exactly. So it'll go through this point and then be projected into the image. So perhaps something like this, right? So this gives a constraint between the two images. 
+
+Yes? So if the lines are parallel. If the lines are parallel. No, it's just a line in the world that is projected back. So they will not be parallel. 
+
+So the epipolar lines will be lines in the image. But there's one thing that's important to understand. And that is, okay, let's say we get yet another point. So we observe a point out here. 
+
+Let's call that Q, let's just call it Q1 to be creative. What we know is that that also will go from the focal point here in the camera out through the image plane here. And the same thing for this camera over here, something like this, right? And therefore, since it goes through the image plane here, also in some point, I don't know, perhaps it's here that it goes through, we know that, okay, if we then project this one into the image plane, we know that, oh, this will lie somewhere like this, for example. And over here, we can have this projection that goes something like this. And then we could have a third point, let's call that, and we can choose. Yeah, now I'm running out of colors, but there's a green one down here. 
+
+We will try the green one. So we do it the same way. We say where does that project to, we know it projects to the focal point here and the focal point here. And we can see, okay, how does this project perhaps something like this? And over here, where does it project to? Oh, it projects to where did I, oh, I put the yellow line here wrong. It of course projects in another way. 
+
+It's this one that should be projected. So it's perhaps something like this, the yellow line over here, sorry about that. And then the green one will come and be projected perhaps something like this. And what you now see is that these lines in the image plane, so think of this, that these are lines from the world that are projected into the image plane. 
+
+And what can you see? You can see they're not parallel in the image plane. They are in all different directions. And in this image, they're crossing and they're crossing in just one point. Over here, they're actually not crossing. 
+
+They're like going outside. But if I extended them, and this is of course done on purpose like this and the purple one, you see that they are also crossing in a point. And that point, we call the epipolar points. So there will be a point where all the epipolar lines from points projected into the camera scene from another camera will go through. 
+
+And that's the epipolar point, right? And it's also always between the cameras. And the reason that we see this here is because this camera, and now this is of course just a sketch, but count on me. This is because if we had two cameras set up, you would from one camera be able to see the focal point of this camera. So this focal point would be visible from this camera. Oftentimes when you do stereo vision, you would have just one camera that you take to two positions. So the camera might not be there. But the reason that the epipolar point is in the image frame is because the focal point, so that's where all the lines will cross, is where that focal point would have projected into the other image. 
+
+So that's the point of the epipolar point and that's where all the epipolar lines cross. Good. So this is the basis for what we will be talking about today. So we know that we have the two cameras, they are placed. You'd have one image from each and you see the scene as static. So no movement of things. So they acquire the image at the same time or they are acquired at different times, but everything was still in between. That's like the assumptions that we have. 
+
+Good. So let's get back to the camera model. So we have a camera model and I'm just going to write it up. 
+
+That was the projection of a point from the world into the image plane. So this is what we call Q, small Q. How big is that? What's the dimensionality of small Q in the 2D image? It's two parameters plus it's typically we are having it in homogeneous coordinates. So it's a 3 by 1. 
+
+Good. And then we have, do we call it, I think it's a little bit different if we call it A or if we call it K. But A is the camera matrix. How big is that? 
+
+3 by 3. Yes. So that's the one that contains what? A 3 by 3 matrix. 
+
+What's in there? F. You're saying F. We start with F. Yes. And that's the focal length. And then zero and what do we write here? Delta x. 
+
+Yes. And zero F delta y, zero zero one. And remember this is when you have the image and you have the principle point in the image, you would have delta x. 
+
+So if the coordinate system is x this direction and y this direction, then delta x will be this and delta y will be this. So this is the parameters of A. And then we have this heart bracket for the, so this was the intrinsic parameters, then we have the extrinsic part. And that's where we have a rotation, we have a translation, and then we have the world coordinate Q. And a little bit depending on how we are doing, it might be that instead of having a 3 by 3 A matrix, we could also make that into a homogeneous coordinates. So no, no, we typically will have it in 3 by 3 because this will be 3 by 4, right? And then this will be 4 by 1. Yeah, okay, now it fits. So we have 3 by 3, these two go out, these two go out, so we have 3 by 1. 
+
+Okay, it fits now. And rotation, what is that? That's the rotation of what? That's the rotation of the camera, yes. So it's rotation of camera from where to where? It's the rotation of the camera to make the world coordinate system fit to the camera coordinate system. So it's going from having a coordinate system in the image plane here, where we have the set going out, to something where we have a three-dimensional world coordinate. So what is the orientation and rotation of the camera in the world coordinate system? 
+
+And then we have the translation that's the same, that functions in the same way. So where is the camera placed in the world? And typically what we will do when we have a setup like this, a stereo setup, is that we will transform everything into having this, having a rotation as the identity matrix, so no rotation and translation of zero. And there's an exercise that you will do where you get these camera parameters and you get some images and you need to draw a photo lines. And in that exercise you need to, there's numbers in both rotation matrices, so you need to do the inverse rotation and translation to get this one to or ego and do that on the other camera parameters to compute the fundamental matrix that you will be using there. But I'll get back to that, but that was, I found it a little bit tricky because I was in doubt when I did the exercise. But now you know, you need to go get camera two rotated and translated with the parameters of camera one, so the inverse of that. And the easiest way to do this is to write up the homogeneous version of this one and taking the inverse and then applying to the rotation and translation of both of the others. But it's good, it's important to remember you need to rotate and you need to rotate the translation also for the other camera. That's the tricky part. 
+
+If you forget to rotate that translation vector, then you'd end up not translating it correctly. Good, but that was just a side note for that. Good, so now we have this one and then we can also say that often we write this part here, so A times RT, we call that often P, something like this, perhaps with a small curl here. So that's also something we're going to use. 
+
+So that's a matrix for the total projection, so that's the projection matrix from world coordinate to camera. And we can also say, but what if we only do this? If we only take the rotation and translation but stay in the world coordinates, we will typically call that then small p equals then to the rotation, translation multiplied by Q. So this is the point we get before applying the camera matrix. 
+
+So before scaling with the focal length and translating with the focal point. Good, and this if we are given the point Q, what about then? So we know that we know from here that Q is given by this multiplication. So if we're given Q, we can also get the P like this. So P is just Q multiplied by the inverse of A, so we can say A inverse Q and then we'll get this P as well. That's also sometimes necessary because you might, and that's because we're now going in the opposite direction. We're going from something we observe in the image and now we're going to the real world. 
+
+So that's also an important part. Good, so I'll get back to my slides now. And show a lot of this once more and then hopefully get to some points with this. So here we have the point projection that I talked about. So any point in 3D is projecting into the camera. 
+
+And you can see this is then showing what I was trying to illustrate on the board. This way of drawing a camera where we have the camera playing in front of the focal point. You know that in reality light goes through the focal point and hits the image on the opposite side. But we just ignore that because we will always model it as being in front of the camera. 
+
+Good, and then we have the projections. So any line in the real world will project to a line in the camera. So here any point projects to a point. Any line will project to a line except if what it says on the slide. When is the case where a line will not project to a line? Yes, so when it's parallel to the viewing direction. So standing in a point looking out if there's a line in the world that is parallel to this viewing direction. You will project into a point. Yes? 
+
+What's the difference between small p and q? So it's just... Basically the same point on the image plane? Yes, so this is not in the image plane. 
+
+That's not living in the image plane. So you should think of it as it's the point, it's just the point that is projected into the camera. So if we think of the camera projection, we will have that... We have the camera here now in 2D and a focal point and then a point out here q, right? And then we project it into the image plane. 
+
+To just get the projection, we just need to know what is this... So we have the distance that we call... This is set and then we have the focal length here f, right? But if we just take the coordinates, the x and y coordinates here and then project them into the image plane, we will just be dividing by the distance set. 
+
+So we will have x divided by set and y divided by set. That will give us the scaling of the points for any point that's lying out here, how it scales when it comes to the image. But we haven't accounted for that the focal length is not one. It's something different measured in the units we're using in the camera coordinate system, or in the world coordinate system. 
+
+Yeah? I thought we didn't know the distance between the camera and the point. No, no, we don't. 
+
+That's completely true today. We're assuming we're just observing some points, but this is just to say how the model works. So this is also a little bit the weird thing that when we're talking about computer vision here in the early phase, we assume that we know more than what we will do in practice. No, no, we will in practice not know what C is. C is what we will try to... 
+
+Both x, y and c will be what we will try to infer from what we'll be doing today by triangulation. But this is just to say that the point P is like an intermediate projected point that scales the projection and rotates and translates into the image plane. But it's done without taking the focal length into account. So the internal or the displacement in the camera. So this translation from the focal point to the camera coordinates. And the reason for that is... And the reason that that can be useful is it will be apparent when we get further on with talking about essential matrix and fundamental matrix. 
+
+So there's a difference. So Q is the one that's projected into the image. P is the one before we have accounted for the image coordinates and so translated to the image coordinates. It's still a projected point, but not in the image coordinate yet. 
+
+Good. So this was the line projection. Then we have plane projection. The same goes for a plane projection. All planes project to planes in an image except when? So when we have something that is where the plane is parallel to the viewing direction, then it will project to a line. So this is quite intuitive to understand. So now we get to this if you follow planes and lines. 
+
+So, yeah, I think I have covered this. And then saying that a point in one image when you have a stereo set up must lie along a line in the other image if it's observed there. So of course you need the two points to be observed by both cameras to get the epipolar line to lie within the camera. But if we had cameras that were like extending the whole surface, then they would be there, assuming we're looking in the same direction. 
+
+But this was the basics that I covered before. So we have two cameras. We are talking here about stereo. You can easily have much more cameras. So often you'll see setups where you have, I don't know, 10 cameras, 100 cameras and so on. And you'll typically treat them pairwise the same way as we do here. And then you just have more constraints on your optimization and get more precise estimates from more cameras. 
+
+Good. So here it's illustrating, like giving a 3D illustration of what I was trying to illustrate over here with the two cameras. And that line or that plane that is here shown that is spanned by the two focal points and a point in 3D is a plane. 
+
+So you have the baseline between two cameras and then a point in the real world. Then you have a vector here and then the lines going out and these three lines span a plane, just two of them just span a plane. And that's what is called the epipolar plane. 
+
+Which line in space is always part of the epipolar planes? Does he answer that? No. 
+
+Do you have some answer for that? Not exactly sure which line in space. It probably says somewhere in the note. 
+
+If you join the two focal points of the camera. Yeah. They will always be part of it. 
+
+Yeah, that's true. So that's the line that always is part of the epipolar plane. So no matter where you take a point, that will always be a plane that is going through that line. So this is the baseline. The line going from the two principal points. Oh, focal points I mean. 
+
+Good. And epipolar lines intersect the epipolar plane and image. So you have the plane and the reason we get lines is because this plane is projected into the image and that's the epipolar lines. And what we know is that in and you can see it here. These two points will always be on the respective epipolar lines. Good. 
+
+And then we have the relation between the line QI to Q and the epipolar lines here. So we have that. Yeah. So this was the projection lines from the world into the cameras. 
+
+Good. So all epipolar lines intersect the epipoles and the epipoles was what I was talking about over here. That is the point where all the epipolar lines intersect and that's the focal point observed in one camera from the other one. That's the epipoles. 
+
+And that's where all the epipolar lines will intersect. Good. And here you see an example. So where are the epipoles here? Are they out here? Out here or somewhere in between the two images? 
+
+It's somewhere in between. So for this one it's to the right here and from this one it's to the left. And since we have a, this is a vase observed from two directions, but you can imagine that if the cameras were both there you wouldn't be able to observe the cameras in the view of the other because the angle of the camera. And that's also why you see these epipolar lines that the epipole would be somewhere outside the image. 
+
+That's very typical. But you can easily do a setup where you, where you image from two positions, you can try it and then draw the epipolar lines or several epipolar lines and then see that they are actually, that you can actually make it be observed in the same image. And you see this like star thing coming that from one point you get these epipolar lines joining in just one point. So this was the epipolar geometry. So every point has an epipolar plane, of course, because it is just no matter from where in space it'll, a point will span a plane together with the epipolar line. An epipolar plane. 
+
+So then we have essential and fundamental matrices. And I've spent 45 minutes going through this. I think we should take a 10 minutes break and then get back to these. So there are two topics more. 
+
+There's these two matrices that are very important. And then there's the, the, the, the stereo vision part that will also come. But I think this is, this is going to be quite straightforward. So more questions. Do you have some more questions? 
+
+Cool. Isn't it just fantastic topic this epipolar geometry? I think it, the, the, the nice thing is that, that it's, it's, it's relatively simple linear algebra. 
+
+So when you sit there and hear it and you think, oh, that, that's pretty easy. But when you get to it, there are so many things that you can mix up and, and you can get, if you just don't subtract the right way or add the right way and so on. So you need to be quite concise in getting it correct. And, and, and, and oftentimes it can be a good idea to write out the formulas before you start implementing. So you're certain what you're doing. 
+
+Otherwise you can, you can mix up a lot of things. Good. Okay. 10 minutes. 
+
+So five minutes to two. We will start again. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. Okay. just interrupt and start talking, then we get it more lively. But I think, oh, it's nice that some of you are asking questions. So just keep on doing that. Now we are going to talk about the essential matrix and the fundamental matrix. 
+
+And what was it that was the constraint of the points when they are projected into the image? Just talked about it. It was, yeah. 
+
+You were saying something to yourself there. Yes? I'm confused with the names. Was it the Epipolar line? Yes, it's the Epipolar line. So we have the Epipolar plane that spans the plane where this point is projecting into the two cameras. So we know that one point in one image lies on a line in the other image. And this means that we can write up an equation in homogeneous coordinates. 
+
+So we can write the essential matrix, which is basically just a matrix we call E. So E. And then we have the points P. And now we'll transpose it. And that will take P2 and multiply P1. So this is a 3 by 1 transposed. So it becomes 1 by 3. This is a 3 by 3. And this is a 3 by 1. 
+
+So we have 3 by 1, 3 by 3, and 3 by 1. And that should be equal to 0. So we know that this equation is a scalar. So this is saying that the constraint is that for any point P1, P2, and P1 that fulfills this constraint. And remember, P was the notation we used for the points that were projected to the image. 
+
+But without getting to the image coordinate, it's still in the world coordinates. So now we are going to derive how we find E. And if you just remove one of these points, you'd notice that you'd have an equation. So if this was a variable, you'd have an equation of some variable, a point, multiplied by something that should be equal to 0. So that's a line equation. 
+
+And that's why we can take this. And then any points in the image 2 that fulfills this equation or the points in image 1 that fulfills this equation will be the epipolar lines. And that is exactly the lines that we are interested in finding. 
+
+And this is then without having the internal parameters of the camera. And then we can have the Q exactly the same way. So we have Q2 transposed. And now we call it F for the fundamental matrix. 
+
+And then Q1 equals to 0. And the size of these vectors and matrices is the same. The only difference is that this is now in the camera coordinate system. So this is the actual observed pixel coordinates. And the exercise that you will be doing is to get the values of the fundamental matrix and then taking a point in one image and then drawing the line in the other image, using this equation. 
+
+Good. So these are the two equations that we need to find. So perhaps before going to the slides, I would like to draw this because I think it's quite nice. So I'm going to repeat the drawing from before. We have a focal point. 
+
+We have a baseline. So these are the focal points. We have a camera, so an image plane. 
+
+Now perhaps I should write the focal point out here so that it can be seen. We have an image plane here of camera 1. We have an image plane here of camera 2. So this is camera 1. 
+
+This is camera 2. So this was the baseline. We have some point out here. So this is the cue point from before. And then we have into the image plane and then out to this. Now I'm just going to move the point slightly to make it fit the relatively straight line, something like this. So this is how it projects, and this is where it projects to in the image. 
+
+If we assume the camera 1 in the world coordinate system has the rotation matrix, r equals the identity matrix, meaning this is just the matrix of 1, 0, 0, 0, 1, 0, 0, 0, 1. So this is just not rotating when you apply this. And the translation equals 0, so meaning that it's 0, 0, 0. So this is 1 and 1. This is the assumption. We just define this to be 0. And then we have over here a rotation 2 and a translation 2, and they have some values. 
+
+Good. Then we know And we can also draw a line from here to the principle, or the focal point over here. We now have two vectors that's a part of the epipolar plane. 
+
+Right? Because we know that this point is on the epipolar plane. It's the point that intersects the line from Q that was a very slanted line. I got drawn there. It doesn't look very nice. 
+
+I'm going to do it. So it becomes a straight line. So we have Q out here. Right? 
+
+So these two lines, we can convince ourselves that they are in the epipolar plane. Good. And we call this point here. If we just project it onto the image plane, but without taking the internal parameters into account, we can call it P. And therefore, from this point to here, we get the rotation and translation of the point P from the position there to there minus this point here. 
+
+We'll span this vector. Right? So we can say that if we... So how is it? 
+
+We write it up. Is it P rotated plus the translation? And that's the translation from one to two. So that's the T2 we have here. 
+
+And that's also the two here minus T2. I think, isn't it something like... And I'm just going to check the slides that I don't get it written up wrongly because I get in doubt now. So we have... Oh, it's just the RP1 plus T. So it's... Yeah, now I... Let's... I'll just simplify this and just remove this and just call these R and T so that it's consistent and then remove this. So now it's consistent with the notation there and this goes out. So it's just this rotation and translation. 
+
+Right? So this RP plus T. And there's a one on this one just to be consistent with the notation. So there's a one here and a one here. Good. So this is this point projected onto here. So this is the translation from here to here. 
+
+Good. Now we want to parameterize this epipolar plane here. And we can do that by finding the normal vector to the plane. So we have some normal vector going up here and that is found as the cross product between these two vectors. Right? And it says here that vectors in the figure are in the reference frame of camera 2. 
+
+Good. So this is what we need because if we have the normal, we will be able to make an equation for the epipolar plane. So the normal is orthogonal to T and to RP1 plus T. So to this vector and this vector, we know that this normal vector is orthogonal to these two. And this means that if we have T cross and then this equation here, P1A plus T, that is the normal vector. So we can write equals N. Right? So if we just make the cross product into this parenthesis, we get T cross P1R plus T cross T equals N. What is a cross product between a vector in itself at zero? 
+
+So this one, this part here, that is just zero. So we're left with this part and we can write this part using this notation here. So making it into a matrix and then multiply P1R equals N. And now we have the part that we need because then any point multiplied by N will equal to zero, will be on the epipolar plane. 
+
+So how do we get this, how do we turn a cross product into a matrix multiplication? Do you know? Or should I write it up? 
+
+I think it's actually pretty cool. So I'm very fast going to write it up. You can also look it up yourself. So a cross product, so if we have A1, A2, A3, which is a cross product with B1, B2, B3, then we can write it up as typically what I do when I do the cross product by hand is adding the last elements here. So I write A1 and B1 here. And then I go down, I go one line down and I say these two multiplied, subtracted by these two multiplied. So it's A2 multiplied by B3, A2, B3 minus A3, B2. 
+
+So the other way around. And then I go one step down and I say A3, B2, A1, B3, A3, and this wasn't B2, this should be B1, B1, minus A1, B3. And then you write up the last one, which is A1, B2, A2, B1, A1, B2, minus A2, B1. And now we want to find something that where you say that we have an equal sign and then we have B1, B2, B3. And then now I'm going to need a little bit of space. 
+
+Perhaps I'll just move this a little slightly down so we make a shift down like this. So B1, B2, B3. And then we need some matrix here where we multiply into that that'll end up giving this. 
+
+So and we want a three by three matrix. So it's just writing up that, okay, A2 should be multiplied by B3. So if we write A, or it's B3, so A2 here and minus A3 should be multiplied by B2. So minus A3 here and then we can write a zero there. 
+
+And then we can do the same here. So we say A3 should be multiplied by B1. So that's the one here. So that's A3. Nothing to do with B2. And then we should have minus A1 with B3. 
+
+And then the same goes down here. A1 should be multiplied by B2. So we can write A1 here and minus A2 should be multiplied by B1, minus A2 and zero there. Then we go from having a cross product that with this complex way of computing it, we can transform that into a nice matrix multiplication. 
+
+We can use our normal matrix multiplication rules and so on. And that's what we note by this Tx. So Tx then becomes the equation, or the matrix here. So it'll contain zero minus T3, T2, T3, zero minus T1 and then minus T2, T1 and zero. So that's the matrix we need. So now it's here and you see this is the equation that we wrote up. And this is what it should look like. 
+
+Good. And then we have this here. And now I put it up wrongly because I put the P on the wrong side. 
+
+So R should be in front. Sorry about that. That's something that I'm going to just change here. So it should be P1, P1 and here as well. P1. 
+
+So this here, so this, I can also write it down here. So Tx, R, P1. This is called, oh, not including P. This is called E, which is the essential matrix and that's equal to the normal vector. And now you can see the only thing we need to do is if we then multiply on the other side. So if we take P2 transpose multiplied by N, it should be equal to zero. And that was the one thing that I wrote up here is that we have the two points P2, P1 and the essential matrix in the middle and they should be zero. That's the constraint we need. So this is the way that we are using this crutch product and we know that when we multiply this point as a three vector onto the vector orthogonal to the, or normal to the epipolar plane, it should be zero because it's the inner product between two vectors that are orthogonal and they will always be, they will end up being zero. 
+
+And that is what we get of constraint. So very simply, we get the start product, we get the essential matrix, everything is fine. And then can any one of you then guess what do we need to add to get to the fundamental matrix? 
+
+The fundamental matrix is where we are doing the same thing but in the image coordinate. So how do we do that? What do we need? Yes, we need the camera matrix and where does it hide? It hides up here, right? 
+
+Oh, no, I'm doing it violently. It's this one, right? So now this equation come in handy because now what we can do is that we can plug this in to the matrix multiplication up here, the same normal but now in the expressed using the Q values, so the Q points, meaning the points in the image plane and it just, now I'm going to swap again, it just becomes the fundamental matrix. So we have it written up here, Q F Q 1 equals zero and if we then plug it into what we have over here, we can say that, okay, we have, there, we can write it up like this. We say we have P 2 transposed N equals zero and that is actually the same as saying P 2 transposed essential matrix P 1 equals zero but since P can also be expressed using Q, we can get Q 2 and that was then multiplied by A inverse, right? 
+
+That was equal to P 2 and then we need to transpose this part, multiply by the essential matrix and then we can express the P 1 also using this. So we have A inverse Q 1, something like this, right? And then we can, and that should be zero, sorry about the mess on the board, but and this, when we transpose this, these two swap places, so we end up with Q 2 transposed A inverse E and then, and that was A inverse transposed and in the note, there's a notation that says minus T, this means A inverse transposed, it's just another way of notating it. And then we have A inverse Q 1 and I didn't put a subscript on these because now I'm assuming that it's the same camera, at least it has the same internal parameters, so there, but if it was two different cameras, this one would be camera 2 and this one would be camera 1 internal parameters. Good, and this should be equal to zero and now we simply just call this part F and that's the fundamental matrix. Good, so now we have the essential matrix, the fundamental matrix, what they do is that they constraint two points such that one point observed in one image will lie on a line in the other image and will have these hyperpolar lines where the two points are going through. 
+
+Good. So, yeah, this is just saying the same thing that I just said and there are two interpretations, P 1 and P 2 are 3D points and N is a vector in 3D, which is what we've used for deriving it, but it's also to say that that N equals EP 1 is an epipolar line and vice versa, so meaning that using E multiplied by the point in one image, all the points that are multiplied by this equal to zero, which is a line, is on the epipolar line. And remember that E is a 3 by 3 multiplied by the point so it becomes a 3 by 1 and therefore multiplying this with another 3 vector will give a line equation and then setting it equal to zero will give a line equation. Good. So, this is derivation of the fundamental matrix, everything is nice. There's also a nice song there and you can see that he calls the cameras for K that I called A, but I think in the lecture note it's called A, so never mind. K, A, same thing and he has a subscript here, 2 and 1, assuming two different cameras, but that's not necessarily the case, oftentimes you'll just have one. And in the exercise you just get one camera matrix because it was the same camera that the two images was taken by. So, these are the two equations. Remember, E is for not when not using the camera, the internal camera calibration, meaning not in the image coordinates, but in the world coordinates and F is in the image coordinates. 
+
+Good. Note on R and T, what if R and T is not given, but you only know the pose of each camera in the world coordinate. So, R1, T1, R2, T2, then you can still compute these relative transformations and that was the warning that I gave you earlier on. So, I'm going to clean this board now. So, what will we do in that situation? 
+
+And I can tell you when I did the exercise, it took me just a little bit of time realizing that I was not doing it thoroughly enough. So, what do we do? We have R1, T1, R2, T2. So, we have R1, T1. And we know that these two are not, this is not the identity and this is not a zero vector. And then we have R2, T2. 
+
+Remember that I said that typically we will take this first camera and model it as if it was in origo, so it would be in zero, so a translation vector of zero and a rotation of the identity. So, what we should do? So, how do we get this one to the identity? Yeah, so we invert it. We multiply it by its inverse, right? And then we can subtract the transformation, the translation as well. 
+
+It also has a translation. And remember this is easily done in homogeneous coordinates. So, what do we do about these two? They shouldn't be zero, but they should get the same transformation as the other two. So, we get the inverse from here and then we know it's the identity and the translation. We don't need to compute them. 
+
+Just know that. And then we can compute these. So, this means that we can do this R, T1, 1, 0 and 1. Now it's written like this. So, this should be a bold zero, meaning that it's three zeroes. 
+
+But this is a four by four, right? And then we can take the, we can call this R, T1 equals this. And if we then take, do the same with RT2, we can say that the RT matrix that we are interested in, let's call it RT star, which is the second camera's rotation and translation that we want to do when we've transformed it, is then equal to the, that we multiply this one by its inverse. So, we would take the RT1 inverse and then multiply it with RT2, meaning that we put these into the matrix, the four by four matrix. Do the inverse and then, of the first one, and then multiply it with the second one. And then we have the rotation and translation that we need. And we need those because then we will have a new matrix with a rotation and translation, rotation in the first three elements and the translation as the three elements here in the last row, which is what we will come in, put into the equation here. Let's go back. 
+
+So, we have this one. So, we need the T and the R here, and that's the two ones that you need to compute the fundamental matrix. Remember that exercise when you get to it, because that's why we have informed about all of these camera parameters. Good. Very nice. So, fundamental essential matrix versus homography, what's the difference? Yeah, so this is so nice with the homography. And why is it that a homography will map from a point in one image to a point in the other image, not a line? 
+
+Anyone with a suggestion? So, the homography, that contains information about a plane in space, and a line will cross a plane unless the plane is orthogonal. But in most cases, we will have a homography. We will know that the line goes through that plane, and the homography encodes that information about where that plane is in space, and therefore, we will have a unique position of the point, and that's what we get from the homographic transformation. So, we can map point to point if we have a plane and we know we've calculated the homography, whereas we can only go from point to line when we have essential and fundamental matrices. Then there's this talk about degrees of freedom. That will be more relevant when we start estimating these matrices. So, going from an image, observing some points, finding correspondences, and then computing the fundamental matrix. 
+
+So, there are nine degrees of freedom, and then there are two constraints on it, so we end up with seven degrees of freedom. And then it was time for the break. We'll skip that, we already had that, and then we'll go to triangulation. I'll do that quite fast, because now we have the same geometry. But we are now going from two points observed, and these two points should be corresponding. So, it's not just any two points, but the same thing observed from two views. 
+
+So, it could be the corner of the table there. You see it from two cameras. We know the pixel coordinates of that. We know the camera parameters, and then we know the position of the cameras, both the internal and external camera parameters. 
+
+So, how is one camera rotated in the world coordinates, and how is the other camera rotated and translated in the world coordinate system? From this, we can estimate the point in space. The lines that we get might not be crossing, because if we are not very, very precise on where we have annotated, or where we've measured the point in the image, they might be a little bit off. 
+
+So, what we want to do is find the point in between the lines in some way. And then we consider the projection matrix. So, remember that P, so this P equals what I call A, R, T. Right? So, this is the projection matrix. And this is a 3 by 3. This is a 3 by 4. 
+
+So, it ends up being a... There are three rows in this matrix. So, it's a 3 by 4 matrix. And then we can have the projection parts of this. We can also write up with the P1, or Px, I think we call it Py, and Pz. 
+
+And now it should be this kind of P. Right? Good. Oh, it's actually written. Here it's written completely different. So, it's 1, 2, 3. 
+
+Yeah, okay, I'll stick to that instead. Why does he write it like that? Yeah, so it's 1, 2, and 3. Let's just stick to the way it's put up. 
+
+Right? So, we have these three, and then we know that the point Q in homogeneous coordinates, so that's the point that's projected into the image coordinates, is scaled by S, which is this thing we have with homogeneous coordinates. And then we can compute that by multiplying the P with the Q. And then we have X and Y as... It's two constraints in this equation. 
+
+Good. We know that this scaling factor is the third row of this matrix here, the projection matrix. That's the scaling when it... Yeah, so this one multiplied by Q, so the 3D coordinate. So, we can write it up this way that X, Y multiplied by the scaling equals to P, I multiplied by Q, and P, I, too, multiplied by Q. 
+
+So, these are just... Remember that these are... Each of these are vectors that are 1 by 4, and therefore we can just put this... I do some rearrangement here and end up with this equation, right? So, we get two lines here. We get a line for the X coordinate saying the third projection matrix multiplied by X, so that's a scalar value, minus the projection matrix first row, and the same for this for the Y, and then it's the second row. 
+
+And this is now a... This is a 4 by 1 multiplied by a scalar, minus a 4 by 1, and the same goes here, and then you multiply this by a 4 by 1, so it fits together, right? And we can then... We get then this equation B multiplied by Q, and we know that this should be 0, right? So, this is the constraint that we set up. 
+
+Good. You can do that for multiple points, so you can just stack up things in this B matrix here, because the size is still fit, so you have a number of points times 2, because you get an X and Y coordinate from each point, and these points are points observed in the image. And then we have this B matrix here, so we have the projections into this... and stack them up in this B matrix, and we have the projections in the two different cameras, so we have projection in camera 1 and projection in camera 2, and coordinates observed in camera 1 and camera 2. So these are the first four lines of this, we'll just be two points observed, and from these two points we can stack it up, and then we can... Now we can take this B matrix, multiply it by the Q point, and that should be 0, because that's where the two lines should meet in space. 
+
+So now we have an equation for... where Q is the unknown, so we want to minimize this equation subject to Q, and there's this additional constraint that Q is a homogeneous vector, so we can put a constraint on that, that it should have a two-norm of 1. Yes? There's one of these equations in the format 1 matrix. 
+
+What? There's one of the equations in the format 1 matrix. Yes, so each line... each row in the matrix is 1 by 4, right? 1 by 4. 
+
+It's 1 by 4, so each line is 1 by 4, and then you can put in as many... you will have corresponding points, so every correspondence will give four lines in this equation, but you could have more, but of course you'll only observe it... Now we are just observing it from two cameras, so we just stick to the four lines. And then by doing this, by saying that we need to find the point where this cross that is where the b multiplied by the 3D point in homogeneous coordinates will be zero, and then we also want to... we don't want the trivial solution, because if Q was just zeroes, this would of course be minimized. It's not becoming negative, but it'll just become zero, and then that's a trivial solution. 
+
+So instead, we need to have the constraint on Q, such that it has the length of one. And we can solve this nicely using a singular value decomposition. So you can set up this equation, do the SVD of the b matrix, and then you get a solution from the product of the singular values, and that's what you'll be doing in the exercise. I know I'm going a little bit fast over this, but I hope that when you're working with it, you get a deeper understanding of it. So, and then there's this small detail on how are we actually... what is actually the problem we're trying to solve. And actually what we are solving, we would like to minimize the distance between the... of the point that minimizes the distance between the lines, and we're not really exactly doing that. 
+
+So ideally, we would take and find the back-projected points that is as close as possible when you project the found point, projected back to the images. But what we end up doing is actually having this multiplication of this scalar value. So this value, which is part of the... like the last part of the homogeneous coordinate. So the third line of the p equation, or projection equation, multiplied by the point. So there's this scaling, such that points further away will get a higher weight. So we could rewrite the term slightly and do this ideal, but we are actually solving it using this algebraic technique. So if we're further away from Q, S becomes larger. 
+
+So the question is, why don't we just divide by S, and then get rid of this scaling factor? And I don't want to bother you with it. This went a little bit faster, I don't expect you... 
+
+Does anyone have the answer? We don't do it because, as you see here before, this Q is part of this. So we cannot just divide by it because we don't know the value before we've computed Q. So we don't have this value. So it's also unknown. 
+
+Good. So we stick to this linear algorithm, which is fine for all practical purposes. And if it's not, we always use it as the initial guess, because it's very easy to compute. You set up this B equation, do the SVD, multiply the left-most singular matrix with the right-most singular matrix, and then you get the Q value. So it's really easy. 
+
+So... And then solving the other problem is nonlinear, and therefore it's more costly to compute, but getting close to the actual solution, you'll have the advantage of the linear algorithm. Good. I think that was more or less what I wanted. There's some learning objectives, so this is what you'll be able to verify. 
+
+Good. Quiz and exercise time. I'll get back to you on the quiz next week, I promise you. Then we will do a recap on everything. But I've been a little bit away, and it's been quite busy coming back from Ski Holiday. But I'll catch up on this. 
+
+I hope you will live with it. But otherwise, the quizzes are small, so you can always do them when they're ready. But exercise... Then I just wanted to go to the exercise. So the exercise here is... Yeah, you get a few cameras. There's an instruction on what to do. 
+
+And a lot of it is quite straightforward if you follow the derivations that I have shown you, and it's also written in the lecture note. So I'll use that to read up on things. And then when you get to this one, so there's this two-image data car in Py. 
+
+When you download that, so let me just show to you... I just wanted to see which one was it. It was exercise 3-8. This was this one. 
+
+What's it up here somewhere? I think this is the one. Like this. So you see, this is the two views that you will be working with. So you have two views of the same car. 
+
+And you should draw if you polar lines in this image. And what you can do to... So you can load this file using this allow pickle item. That's given there. But if you want to see what this contains, it's a dictionary. 
+
+So you can print its keys. And you'll see that it has an image 1, a translation 1, a translation 1, image 2, rotation 2, translation 2, and K. That's the matrix I call A, but that's the camera matrix. And it's the same for the two. We just have one camera matrix. And if we then, for example, look into it, you can see the camera matrix has these two values. So the two focal lengths and the translation. So this is the delta x and delta y. And then it has a 1 here because it's in homogeneous coordinates. So it looks correct. 
+
+But one thing you should notice is that R1... Not this one, R1. Oh, it's insisting on... Why wasn't... It doesn't want to display this. 
+
+Okay, I'm going to write print because it's too smart for me. Didn't it load? Oh, this is why. I called it... 
+
+It's because it's an element of a dictionary. Something like this. Yes. And you can see this is not 0. And neither is the T1. So you can see these are non-series. And that's where you should do this inverse. And when you've done it, you will be able to plot it. And I have modified the function that Morten has written in... Where do we have it? There. 
+
+That he writes in a function here. That's a straw line and then L and G. But I like to use these subplots in Python. And having it as subplots, I need to tell it which image to draw in. And therefore I give it the axis as argument as well. And when I plot it, I say instead of PLT.plot, I say the axis that I'm plotting in. So this is the modification that I did. I can just show you what it will look like. So I think this is the one. 
+
+So here... And I use QT in VS Code because this brings out a frame where I can actually get this input. But if you then put in a line... Oh, this was wrong. You can see this was the... This one. I should probably press a point over here. 
+
+So let's say I press on this one here. And you can see it draws a line in the other image nicely through this point. So I got finally after half an hour fiddling around and not wanting to implement this inverse. Because I thought it was a little bit too cumbersome. I could just rotate and translate how hard can it be. But it is actually something that you get confused about. 
+
+When do you rotate the translation and which way and so on? So implement it that way. And then you get this and you can do it both ways. 
+
+So this is what you'll end up with. I also started out just finding a coordinate, writing it into the script and then just displaying it. So this interactive was also a little bit tricky to get working. 
+
+And that's not important for the learning. It's just convenience that you can click on the image. Yes, and what else do I have for the exercise? Then 3, 10, 3, 11. Yeah, and then there's of course the solutions in the end of the exercises. And they will give you a hint on... Most of them just some numbers that gives you a hint on if you're on the right path. 
+
+So that's why they're useful to have there. Yes, and the last one is triangulation. And as you realize, it's more or less putting up this B equation, getting it solved. And then it's relatively simple, this one. 
+
+We'll get back to triangulation much more. So this is like the first step into this. Good. I think you are more than ready to go. Sorry about taking so long, but I get excited about this. 
+
+So keep on talking. Any questions? No. You just want to get off. 
+
+It's going to be short versions of that, yes. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. Thank you. 
