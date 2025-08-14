@@ -3,3 +3,13 @@ scipy
 matplotlib
 opencv-python>=4.4.0
 scikit-image
+# PDF reading / parsing / OCR
+pypdf
+pdfplumber
+pdfminer.six
+PyMuPDF
+pdf2image
+camelot-py
+tabula-py
+pytesseract
+pdftotext
