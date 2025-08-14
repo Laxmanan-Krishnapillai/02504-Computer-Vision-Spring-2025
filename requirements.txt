@@ -13,3 +13,7 @@ camelot-py
 tabula-py
 pytesseract
 pdftotext
+jupyterlab
+notebook
+ipykernel
+ipywidgets
